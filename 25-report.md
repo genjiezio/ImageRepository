@@ -41,38 +41,40 @@ And it is **Real-time refresh**, every 3 seconds refresh 1 time.
 1. **step1**: use "/proc/pid/status" to read the information of process which has Pid, and processing the data. 
    - Excute the command, store the information in a **buf**, then read the buf to a line:
    
-   ``
+   ```c++
    snprintf(buf, PATH_MAX, "/proc/%d/status", num);
-   ``
+   ```
    
-   ``
+   ```c++
    f = fopen(buf, "r");
-   ``
+   ```
    
    - Matching the information in the line with what we want, and save the information, then processing the data, such as pid:
    
-   ``
+   ```c++
    if (!strncmp(line, "Pid:", 4))
-		{
-			Pid = strdup(&line[4]);
-		}
-   ``
+	{
+		Pid = strdup(&line[4]);
+	}
+   ```
    
-   ``
+   ```c++
    len = strlen(Pid);
     Pid[len-1] = 0;
-   ``
+   ```
    
    - Extract the **main process** in **process group**(in a group, processes share virtual an real memory), the feature is **Pid=Tgid**:
    
-   ``
-   int a = atoi(Tgid); int b = atoi(Pid);	if(a == b){...};
-   ``
+   ```c++
+   int a = atoi(Tgid); 
+   int b = atoi(Pid);	
+   if(a == b){...};
+   ```
    
 2. **step2**: Sort the main process and maintain this struct dynamicly.
    - Define the **struct** of main process:
    
-   ``
+   ```c++
    typedef struct {
     int pid;
     string name;
@@ -82,66 +84,66 @@ And it is **Real-time refresh**, every 3 seconds refresh 1 time.
 	  int vrss;
 	  int vhwm;
     }proc ;
-   ``
+   ```
    
    - Use a **unordered_map** to record the relation between **real memory** and process's **id in array**, can be use to find the process by real memory.
    
-   ``
+   ```c++
    string str1 = vmrss; str1.erase(0,str1.find_first_not_of(" ")); mymap.emplace(str1, count);
-   ``
+   ```
    
-   ``
+   ```c++
    string str = std::to_string(x); nums[j] = mymap.at(str);
-   ``
+   ```
    
    - Use a **Priority_queue** to maintain the largest 30 process's real memory information:
    
-   ``
+   ```c++
    priority_queue<int, vector<int>, greater<int> > q;
-   ``
+   ```
    
-   ``
+   ```c++
    if(qsize < 30){
-			q.push(size);
-			qsize++;
-		}else{
-			if(size > q.top()){
-				q.push(size);
-				q.pop();
-			}
-		}
-   ``
+	q.push(size);
+	qsize++;
+   }else{
+	if(size > q.top()){
+	    q.push(size);
+	    q.pop();
+   	}
+   }
+   ```
 
 3. **step3**: Use "/proc/meminfo" to get memory information of RealMem info and SwapMemory info.
    - Excute the command, store the information in a **buff**, then read the buf to a line:
    
-   ``
+   ```c++
    snprintf(buff, PATH_MAX, "/proc/meminfo", num);
-   ``
+   ```
    
-   ``
+   ```c++
    f = fopen(buff, "r");
-   ``
+   ```
    
    - Matching the information in the line, find memory information, and processing data, such as MemTotal:
    
-   ``
+   ```c++
    if (!strncmp(line, "MemTotal:", 9))
-		{
-			Pid = strdup(&line[9]);
-		}
-   ``
+	{
+		Pid = strdup(&line[9]);
+	}
+   ```
    
-   ``
+   ```c++
    len = strlen(MemTotal);
     MemTotal[len-1] = 0;
-   ``
+   ```
    
 4. **step4**: Calculate and Print the process:
    - Calculate and print, using **pringf** to control retract and space:
    
-   ``
-   proc p = threads[nums[y]];
+   ```c++
+   	proc p = threads[nums[y]];
 		printf("%-*d",7, p.pid);
 		printf("%-*s",17, p.name.c_str());
 		printf("%-*s",20, p.state.c_str());
@@ -152,19 +154,21 @@ And it is **Real-time refresh**, every 3 seconds refresh 1 time.
 		double a = MemTotal, b = p.vrss;
 		double d = b/a *100;
 		printf("%-*.2f",10, d);
-   ``
+   ```
    
    - Use **printf** to clean the screen, use **sleep** to refresh every 3 seconds:
    
-   ``
-   printf("\033[2J");	refresh();	sleep(3);
-   ``
+   ```c++
+   printf("\033[2J");	
+   refresh();	
+   sleep(3);
+   ```
    
    - Restart the process when fopen reach the open file number limit:
    
-   ``
+   ```c++
    execv("/proc/self/exe",args);
-   ``
+   ```
 
 
 **Goal 2** 实现检测具体进程中内存和文件句柄的分配与释放：
