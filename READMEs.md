@@ -30,6 +30,7 @@ And it is **Real-time refresh**, every 3 seconds refresh 1 time.
 
 ​	There is an example bellow.
 
+![image](https://github.com/genjiezio/ImageRepository/blob/main/history.jpg)
 ---
 
 
