@@ -264,10 +264,26 @@ class MemAllocate{
 
 ---
 
+### Future direction
+**For goal 1** :
+- The **Real-time** refresh is still not the best implementation way, we will tay to use GUI in the future.
+- The information still can be expand, like the excute and wait time of process, we may do this in future
 
-### group member
+**For goal 2** :
+- Cause the memory allocation and free is only for data segement, we can try to detect rest segements like heap, stack and code.
 
-* 11810115 陈启龙
-* 11810420 王照伟
+---
+
+### Summary:
+- We have learned how the top is implemented
+- We have learned use "/proc/..." to get the information of process
+- We have learned the mechanism of new/delete/malloc/free
+
+---
+
+### Division of labor
+
+* 11810420 王照伟 : goal 1
+* 11810115 陈启龙 : goal 2
 
 ---
